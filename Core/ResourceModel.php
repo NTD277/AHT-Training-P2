@@ -30,9 +30,9 @@ class ResourceModel implements ResourceModelInterface
                 $k[] = $key;
                 array_push($placeholder, ':' . $key);
             }
-            $strKeyIns = implode(', ', $k);
+            $strKeyInsert = implode(', ', $k);
             $strPlaceholder = implode(', ', $placeholder);
-            $sqlInsert = "INSERT INTO $this->table ({$strKeyIns}) VALUES ({$strPlaceholder})";
+            $sqlInsert = "INSERT INTO $this->table ({$strKeyInsert}) VALUES ({$strPlaceholder})";
             $insert = Database::getBdd()->prepare( $sqlInsert);
             
             return $insert->execute($arrModel);
