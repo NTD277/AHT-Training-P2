@@ -20,33 +20,35 @@ class ResourceModel implements ResourceModelInterface
 
     public function save($model)
     {
-        $placeholder = [];
-        $insert_key = [];
-        $placeUpdate = [];
-
         $arrModel = $model -> getProperties();
-
+        // create
         if ($model -> getId() === null){
+            $placeholder = [];
+            $k = [];
+
             foreach ($arrModel as $key => $value){
-                $insert_key[] = $key;
-                array_push($placeholder, ':'.$key);
+                $k[] = $key;
+                array_push($placeholder, ':' . $key);
             }
-            $strKeyIns = implode(', ', $insert_key);
+            $strKeyIns = implode(', ', $k);
             $strPlaceholder = implode(', ', $placeholder);
-            $sql_insert = "INSERT INTO $this->table ({$strKeyIns}) VALUES ({$strPlaceholder})";
-            $obj_insert = Database::getBdd()->prepare( $sql_insert);
+            $sqlInsert = "INSERT INTO $this->table ({$strKeyIns}) VALUES ({$strPlaceholder})";
+            $insert = Database::getBdd()->prepare( $sqlInsert);
             
-            return $obj_insert->execute($arrModel);
+            return $insert->execute($arrModel);
         }else{
-            foreach ($arrModel as $k=>$item){
-                array_push($placeUpdate, $k.' = :'.$k);
+        // update 
+            $placeUpdate = [];
+
+            foreach ($arrModel as $key => $value){
+                array_push($placeUpdate, $key . ' = :' . $key);
             }
             
             $strPlaceUpdate=implode(', ',$placeUpdate);
-            $sql_update="UPDATE {$this->table} SET $strPlaceUpdate WHERE id = :id";
-            $obj_update=Database::getBdd()->prepare($sql_update);
+            $sqlUpdate="UPDATE {$this->table} SET $strPlaceUpdate WHERE id = :id";
+            $Update=Database::getBdd()->prepare($sqlUpdate);
 
-            return $obj_update->execute($arrModel);
+            return $Update->execute($arrModel);
         }
     }
 
